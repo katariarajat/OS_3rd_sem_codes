@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <curses.h>
 #include <string.h>
 #include <fcntl.h>
 
@@ -13,7 +12,6 @@ int main(int argc, char *argv[])
 	// if not then create it with mkdir
 	struct stat stats;
 	stat("ASSIGNMENT", &stats);
-
 	if ((S_ISDIR(stats.st_mode)) == 0)
 	{
 
@@ -36,7 +34,22 @@ int main(int argc, char *argv[])
 	// creating relative path for new file to be created in
 	// fullpath char array using sprintf()
 
-	sprintf(fullpath, "ASSIGNMENT/%s", argv[1]);
+	char *g;
+	g=(char*)malloc(sizeof(char)*500);
+	int begin=0;
+	for(int i=0;i<strlen(argv[1]);i++)
+	{
+		if(argv[1][i]=='/')
+		{
+			begin=0;
+			continue;
+		}
+		g[begin++]=argv[1][i];
+	}
+	g[begin]='\0';
+	// printf("%s\n",g);
+	// return 0;
+	sprintf(fullpath, "ASSIGNMENT/%s", g);
 
 	int fp = open(argv[1], O_RDONLY | O_EXCL);
 	//returning error if the file given does not opens
@@ -45,7 +58,7 @@ int main(int argc, char *argv[])
 		perror("ERROR OPENING GIVE FILE");
 		return 0;
 	}
-
+	
 	// checking if the file already exist in ASSIGNMENT folder and changing its method of opening from O_CREAT
 	// if file doesnot exist 
 	struct stat st;

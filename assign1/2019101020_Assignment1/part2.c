@@ -26,14 +26,12 @@ int main(int argc,char* argv[])
 		write(1,"Yes\n",4);
 		closedir(dir);
 	}
-	else if(ENOENT == errno )
+	else 
 	{
 		write(1,"No\n",3);
 		flag1=0;
 	}
-	else{
-		perror("opendir()");
-	}
+	
 	// opening new file and old file in read mode
 	int fp = open(argv[1],O_RDONLY | O_EXCL);
 	int fptr = open(argv[2],O_RDONLY | O_EXCL);
@@ -41,10 +39,12 @@ int main(int argc,char* argv[])
 	long long int n1 = lseek(fp,0,SEEK_END);
 	long long int n2 = lseek(fptr,0,SEEK_END);
 	char ch1,ch2;
-		write(1,"Whether file contents are reversed in newfile: ",47);
+	write(1,"Whether file contents are reversed in newfile: \n",48);
+	 write(1,"Checking files...                        \n",42);
 	int flag=1;	
 	// newfiles and old files are reverse or not is checked by character by character,extrating newfile from beginning and old file from end untill all the characters are checked 
 
+	
 
 	if(n1!=n2)
 		flag=0;
@@ -60,7 +60,8 @@ int main(int argc,char* argv[])
 		long long int i = 0;
 		c=(char*)malloc(block_read);
 		h=(char*)malloc(block_read);
-
+		char *msg;
+		msg=(char*)malloc(block_read);	
 
 		while(i<left_block)
 		{
@@ -77,34 +78,25 @@ int main(int argc,char* argv[])
 				flag=0;
 				break;
 			}
-		
 		}
 		i=0;
-	while(i<500 && block && flag)
-	{
-
-		lseek(fptr,i*sizeof(char)*block+left_block,SEEK_SET);
-		i++;
-		
-		lseek(fp,-i*sizeof(char)*block-left_block,SEEK_END);
-		read(fp,c,sizeof(char)*block);
-		read(fptr,h,sizeof(char)*block);
-
-		for(int begin=0,end=block-1;begin<block,end>=0;begin++,end--)
+		while(i<500 && block && flag)
 		{
-			if(h[begin]!=c[end])
+			lseek(fptr,i*sizeof(char)*block+left_block,SEEK_SET);
+			i++;
+			lseek(fp,-i*sizeof(char)*block-left_block,SEEK_END);
+			read(fp,c,sizeof(char)*block);
+			read(fptr,h,sizeof(char)*block);
+
+			for(int begin=0,end=block-1;begin<block,end>=0;begin++,end--)
 			{
-				flag=0;
-				break;
+				if(h[begin]!=c[end])
+				{
+					flag=0;
+					break;
+				}
 			}
 		}
-		
-
-		
-
-	}
-
-
 	}
 	if(flag==0)
 		write(1,"No\n",3);
