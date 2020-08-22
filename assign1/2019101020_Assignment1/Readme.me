@@ -1,0 +1,37 @@
+NOTE:Code will work if all arguments mentioned in question are passed.
+If less number of arguments are passed then it will show error saying "<number> of arguments should be passed"
+
+commands used : opendir,stat,read,write,open,lseek,perror,sprintf,system()
+
+PART 1
+
+
+1)stat is used to verify initially if directory exists,
+S_ISDIR is used to check if directory exists and there is no need to create
+
+2)Reversing of file:
+This is done by taking 0.2% block of file as a block which would be read at once.
+if number of char is less than 500 then it is revesed by taking each character from first file from end and storing it as from starting in 2nd file.
+if number of characters > 500 then the data is read as chunks of 0.2% of file (total 500 blocks) and if the remaining number of characters are taken one by one as they are less than 500.
+the string containing blocks size character are reversed by a for loop to a another string and then written into the ASSIGNMENT/argv[1] file.
+untill total 500 chuncks + remaining characters as reminder are written inside file.
+
+
+In this way new file is written.
+
+PART 2
+
+1) directory exists or not is checked by opendir() system call which returns a integer > 0 if directory exists and opens it ,if error code in errno == ENOENT that means directory doesnot exist .
+if we found that directory exist then, in if statement closing that directory and write(directory exists in stdout)
+
+2) for checking newfile is reverse of old file ,similar procedire as part 1 is used 
+each time chunks are taken.if 0.2% of block of text from both the file are loaded in strings then for loop iterating in one from starting and other from end  is appkied to check if string are reversed ,it is done for 500 times.if at some stage character doesnot match loop breaks.
+In case of remainder:
+each time in while loop, ith char from starting in new file and ith char from end in oldfile  is checked untill all the character in the file are checked,if in between while loop some character does not match then the break while  loop and newfile is not reverse of old file.
+
+3)permission are checked by using stat command.
+forming a structure struct stat <name>;
+then using st_mode and its flag to identify permission of files and directory 
+falgs used are: S_IRUSR,S_IWUSR, S_IXUSR,
+S_IRGRP, S_IWGRP ,S_IXGRP
+S_IROTH, S_IWOTH ,S_IXOTH
